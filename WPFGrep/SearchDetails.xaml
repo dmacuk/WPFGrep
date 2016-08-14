@@ -1,0 +1,87 @@
+﻿<Window
+    x:Class="WPFGrep.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ignore="http://www.galasoft.ch/ignore"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="clr-namespace:WPFGrep.UserControls"
+    Title="WindowsGrep"
+    Width="300"
+    Height="300"
+    DataContext="{Binding Main, Source={StaticResource Locator}}"
+    mc:Ignorable="d ignore">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Skins/MainSkin.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Label
+            Grid.Row="0"
+            Grid.Column="0"
+            Style="{DynamicResource CaptionStyle}"
+            Content="Start Directory" />
+        <userControls:DirectoryPicker
+            Grid.Row="0"
+            Grid.Column="1"
+            Style="{DynamicResource ControlStyle}" />
+        <Label
+            Grid.Row="1"
+            Grid.Column="0"
+            Style="{DynamicResource CaptionStyle}"
+            Content="File Types" />
+        <TextBox
+            Grid.Row="1"
+            Grid.Column="1"
+            Style="{DynamicResource ControlStyle}"
+            Text="{Binding FileTypes}">
+            <TextBox.ToolTip>
+                <ToolTip
+                    Content="e.g. *.csv;*.TXT;*.cs"
+                    IsOpen="True"
+                    Placement="Mouse"
+                    StaysOpen="True"
+                    Visibility="Visible" />
+            </TextBox.ToolTip>
+        </TextBox>
+        <Label
+            Grid.Row="2"
+            Grid.Column="0"
+            Style="{DynamicResource CaptionStyle}"
+            Content="Search For" />
+        <TextBox
+            Grid.Row="2"
+            Grid.Column="1"
+            Style="{DynamicResource ControlStyle}"
+            Text="{Binding SearchFor}" />
+        <CheckBox
+            Grid.Row="3"
+            Grid.Column="1"
+            Content="Search Sub-directories" Style="{DynamicResource CheckboxStyle}"
+            IsChecked="{Binding SearchSubDirectories}" />
+        <Button
+            Grid.Row="4"
+            Grid.Column="1"
+            HorizontalAlignment="Right"
+            Style="{DynamicResource ControlStyle}"
+            Command="{Binding SearchCommand}"
+            Content="Search" />
+    </Grid>
+</Window>

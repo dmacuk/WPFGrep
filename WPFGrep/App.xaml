@@ -1,0 +1,31 @@
+﻿<Application
+    x:Class="WPFGrep.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ignore="http://www.galasoft.ch/ignore"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:WPFGrep.ViewModel"
+    StartupUri="SearchDetails.xaml"
+    mc:Ignorable="d ignore">
+
+    <Application.Resources>
+        <!--  Global View Model Locator  -->
+        <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
+        <Style x:Key="ControlStyle" TargetType="Control">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+        <Style
+            x:Key="CaptionStyle"
+            BasedOn="{StaticResource ControlStyle}"
+            TargetType="Label">
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style
+            x:Key="CheckboxStyle"
+            BasedOn="{StaticResource ControlStyle}"
+            TargetType="CheckBox">
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+    </Application.Resources>
+</Application>
