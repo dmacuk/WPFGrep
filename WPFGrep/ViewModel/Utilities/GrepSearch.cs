@@ -4,6 +4,12 @@ using System.Text.RegularExpressions;
 
 namespace WPFGrep.ViewModel.Utilities
 {
+    public enum GrepSearchEvent
+    {
+        MatchFound,
+        Finished
+    }
+
     public class GrepSearch
     {
         private readonly RegexOptions _regexOptions;
@@ -15,6 +21,8 @@ namespace WPFGrep.ViewModel.Utilities
         private readonly bool _searchSubDirectories;
 
         private readonly DirectoryInfo _startDirectory;
+
+        private bool _continue;
 
         public GrepSearch(string startDirectory, string searchPattern, string searchFor, bool searchSubDirectories)
         {
@@ -34,6 +42,11 @@ namespace WPFGrep.ViewModel.Utilities
             Search(_startDirectory);
         }
 
+        public void Stop()
+        {
+            _continue = false;
+        }
+
         private void OnChanged(MatchFoundEventArgs e)
         {
             MatchFound?.Invoke(this, e);
@@ -51,16 +64,18 @@ namespace WPFGrep.ViewModel.Utilities
 
             foreach (var file in dir.EnumerateFiles(_searchPattern))
             {
+                if (!_continue) break;
                 var reader = file.OpenText();
                 string line;
                 var lineCount = 0;
-                while ((line = reader.ReadLine()) != null)
+                while (_continue && (line = reader.ReadLine()) != null)
                 {
                     lineCount++;
                     if (Regex.IsMatch(line, _searchFor, _regexOptions))
                     {
                         OnChanged(new MatchFoundEventArgs
                         {
+                            GrepSearchEvent = GrepSearchEvent.MatchFound,
                             File = file,
                             LineNumber = lineCount,
                             Line = line
@@ -68,12 +83,18 @@ namespace WPFGrep.ViewModel.Utilities
                     }
                 }
             }
+
+            OnChanged(new MatchFoundEventArgs
+            {
+                GrepSearchEvent = GrepSearchEvent.Finished
+            });
         }
     }
 
     public class MatchFoundEventArgs : EventArgs
     {
         public FileInfo File { get; set; }
+        public GrepSearchEvent GrepSearchEvent { get; set; }
         public string Line { get; set; }
         public int LineNumber { get; set; }
     }

@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Gat.Controls;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace WPFGrep.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private readonly Dictionary<FileInfo, List<GrepResult>> _results = new Dictionary<FileInfo, List<GrepResult>>();
+        private readonly List<GrepSearch> _searchers = new List<GrepSearch>();
         private bool _dirty;
 
         private string _fileTypes;
@@ -56,6 +58,8 @@ namespace WPFGrep.ViewModel
             }
         }
 
+        public bool Searching { get; set; }
+
         public bool SearchSubDirectories
         {
             get { return _searchSubDirectories; }
@@ -73,6 +77,8 @@ namespace WPFGrep.ViewModel
                 if (Set(() => StartDirectory, ref _startDirectory, value)) _dirty = true;
             }
         }
+
+        public RelayCommand StopCommand => new RelayCommand(StopCommandExecute, StopCommandCanExecute);
 
         private void GetStartDirectory()
         {
@@ -132,30 +138,57 @@ namespace WPFGrep.ViewModel
 
         private void MatchFound(object sender, MatchFoundEventArgs e)
         {
-            if (!_results.ContainsKey(e.File)) _results.Add(e.File, new List<GrepResult>());
-            _results[e.File].Add(new GrepResult
+            switch (e.GrepSearchEvent)
             {
-                LineNumner = e.LineNumber,
-                Line = e.Line
-            });
+                case GrepSearchEvent.MatchFound:
+                    if (!_results.ContainsKey(e.File)) _results.Add(e.File, new List<GrepResult>());
+                    _results[e.File].Add(new GrepResult
+                    {
+                        LineNumner = e.LineNumber,
+                        Line = e.Line
+                    });
+                    break;
+
+                case GrepSearchEvent.Finished:
+                    _searchers.Remove((GrepSearch)sender);
+                    if (_searchers.Count == 0) Searching = false;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException("Invalid GrepSearchEvent: " + e.GrepSearchEvent);
+            }
         }
 
         private bool SearchCommandCanExecute()
         {
-            return !string.IsNullOrWhiteSpace(SearchFor) &&
-                   !string.IsNullOrWhiteSpace(FileTypes) &&
-                   !string.IsNullOrWhiteSpace(StartDirectory);
+            return !Searching && !string.IsNullOrWhiteSpace(SearchFor) && !string.IsNullOrWhiteSpace(FileTypes) && !string.IsNullOrWhiteSpace(StartDirectory);
         }
 
         private void SearchCommandExecute()
         {
+            Searching = true;
+            _searchers.Clear();
             var filetypes = _fileTypes.Split(';');
             Parallel.ForEach(filetypes, fileType =>
             {
                 var searcher = new GrepSearch(_startDirectory, fileType, _searchFor, _searchSubDirectories);
+                _searchers.Add(searcher);
                 searcher.MatchFound += MatchFound;
                 searcher.Search();
             });
+        }
+
+        private bool StopCommandCanExecute()
+        {
+            return Searching;
+        }
+
+        private void StopCommandExecute()
+        {
+            foreach (var search in _searchers)
+            {
+                search.Stop();
+            }
         }
     }
 }

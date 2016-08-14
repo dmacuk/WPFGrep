@@ -76,12 +76,17 @@
             Grid.Column="1"
             Content="Search Sub-directories" Style="{DynamicResource CheckboxStyle}"
             IsChecked="{Binding SearchSubDirectories}" />
-        <Button
-            Grid.Row="4"
-            Grid.Column="1"
-            HorizontalAlignment="Right"
-            Style="{DynamicResource ControlStyle}"
-            Command="{Binding SearchCommand}"
-            Content="Search" />
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Right">
+            <Button
+                x:Name="StartButton"
+                Style="{DynamicResource ControlStyle}"
+                Command="{Binding SearchCommand}"
+                Content="Search" />
+            <Button
+                Style="{DynamicResource ControlStyle}"
+                Command="{Binding StopCommand}"
+                Content="Stop"
+                Width="{Binding ElementName=StartButton, Path=ActualWidth}" />
+        </StackPanel>
     </Grid>
 </Window>
