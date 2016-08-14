@@ -86,10 +86,13 @@
     <Compile Include="UserControls\DirectoryPicker.xaml.cs">
       <DependentUpon>DirectoryPicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\GrepSearchEvent.cs" />
+    <Compile Include="Utilities\GrepSearchWorker.cs" />
+    <Compile Include="Utilities\MatchFoundEventArgs.cs" />
+    <Compile Include="Utilities\ThreadSafeList.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\Utilities\GrepSearch.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="ViewModel\VOs\GrepResult.cs" />
+    <Compile Include="VOs\GrepResult.cs" />
     <Page Include="SearchDetails.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

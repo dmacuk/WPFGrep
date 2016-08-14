@@ -1,17 +1,14 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
-namespace WPFGrep.ViewModel.Utilities
+namespace WPFGrep.Utilities
 {
-    public enum GrepSearchEvent
+    internal class GrepSearchWorker
     {
-        MatchFound,
-        Finished
-    }
+        private readonly bool _continue = true;
 
-    public class GrepSearch
-    {
         private readonly RegexOptions _regexOptions;
 
         private readonly string _searchFor;
@@ -22,9 +19,9 @@ namespace WPFGrep.ViewModel.Utilities
 
         private readonly DirectoryInfo _startDirectory;
 
-        private bool _continue;
+        private Task _worker;
 
-        public GrepSearch(string startDirectory, string searchPattern, string searchFor, bool searchSubDirectories)
+        public GrepSearchWorker(string startDirectory, string searchPattern, string searchFor, bool searchSubDirectories)
         {
             _startDirectory = new DirectoryInfo(startDirectory);
             _searchPattern = searchPattern;
@@ -39,12 +36,12 @@ namespace WPFGrep.ViewModel.Utilities
 
         public void Search()
         {
-            Search(_startDirectory);
+            _worker = Task.Factory.StartNew(() => Search(_startDirectory));
         }
 
         public void Stop()
         {
-            _continue = false;
+            throw new NotImplementedException();
         }
 
         private void OnChanged(MatchFoundEventArgs e)
@@ -89,13 +86,5 @@ namespace WPFGrep.ViewModel.Utilities
                 GrepSearchEvent = GrepSearchEvent.Finished
             });
         }
-    }
-
-    public class MatchFoundEventArgs : EventArgs
-    {
-        public FileInfo File { get; set; }
-        public GrepSearchEvent GrepSearchEvent { get; set; }
-        public string Line { get; set; }
-        public int LineNumber { get; set; }
     }
 }

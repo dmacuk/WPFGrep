@@ -4,9 +4,8 @@ using Gat.Controls;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
-using WPFGrep.ViewModel.Utilities;
-using WPFGrep.ViewModel.VOs;
+using WPFGrep.Utilities;
+using WPFGrep.VOs;
 
 namespace WPFGrep.ViewModel
 {
@@ -19,7 +18,7 @@ namespace WPFGrep.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private readonly Dictionary<FileInfo, List<GrepResult>> _results = new Dictionary<FileInfo, List<GrepResult>>();
-        private readonly List<GrepSearch> _searchers = new List<GrepSearch>();
+        private readonly ThreadSafeList<GrepSearchWorker> _searchWorkers = new ThreadSafeList<GrepSearchWorker>();
         private bool _dirty;
 
         private string _fileTypes;
@@ -150,8 +149,8 @@ namespace WPFGrep.ViewModel
                     break;
 
                 case GrepSearchEvent.Finished:
-                    _searchers.Remove((GrepSearch)sender);
-                    if (_searchers.Count == 0) Searching = false;
+                    _searchWorkers.Remove((GrepSearchWorker)sender);
+                    if (_searchWorkers.Count == 0) Searching = false;
                     break;
 
                 default:
@@ -161,21 +160,22 @@ namespace WPFGrep.ViewModel
 
         private bool SearchCommandCanExecute()
         {
-            return !Searching && !string.IsNullOrWhiteSpace(SearchFor) && !string.IsNullOrWhiteSpace(FileTypes) && !string.IsNullOrWhiteSpace(StartDirectory);
+            return !Searching && !string.IsNullOrWhiteSpace(SearchFor) && !string.IsNullOrWhiteSpace(FileTypes) &&
+                   !string.IsNullOrWhiteSpace(StartDirectory);
         }
 
         private void SearchCommandExecute()
         {
             Searching = true;
-            _searchers.Clear();
+            _searchWorkers.Clear();
             var filetypes = _fileTypes.Split(';');
-            Parallel.ForEach(filetypes, fileType =>
+            foreach (var filetype in filetypes)
             {
-                var searcher = new GrepSearch(_startDirectory, fileType, _searchFor, _searchSubDirectories);
-                _searchers.Add(searcher);
-                searcher.MatchFound += MatchFound;
-                searcher.Search();
-            });
+                var worker = new GrepSearchWorker(_startDirectory, filetype, _searchFor, _searchSubDirectories);
+                _searchWorkers.Add(worker);
+                worker.MatchFound += MatchFound;
+                worker.Search();
+            }
         }
 
         private bool StopCommandCanExecute()
@@ -185,7 +185,7 @@ namespace WPFGrep.ViewModel
 
         private void StopCommandExecute()
         {
-            foreach (var search in _searchers)
+            foreach (var search in _searchWorkers)
             {
                 search.Stop();
             }
