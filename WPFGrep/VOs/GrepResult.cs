@@ -1,8 +1,8 @@
-namespace WPFGrep.ViewModel.VOs
+namespace WPFGrep.VOs
 {
     internal class GrepResult
     {
-        public int LineNumner { get; set; }
         public string Line { get; set; }
+        public int LineNumner { get; set; }
     }
 }
