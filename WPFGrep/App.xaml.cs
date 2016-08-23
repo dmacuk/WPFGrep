@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using GalaSoft.MvvmLight.Threading;
+using Utils.Preference;
 
 namespace WPFGrep
 {
@@ -11,6 +12,16 @@ namespace WPFGrep
         static App()
         {
             DispatcherHelper.Initialize();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            PreferenceManager.GetInstance("WPFGrep.prefs");
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            PreferenceManager.SavePreferences();
         }
     }
 }

@@ -148,6 +148,12 @@
   <ItemGroup>
     <Resource Include="Images\Search-Find.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Utils\Utils\Utils.csproj">
+      <Project>{8D762AA6-63A4-4B17-A8C2-26D10ED6D7C9}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
