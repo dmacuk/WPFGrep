@@ -1,9 +1,10 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
-using Gat.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.CommandWpf;
+using Gat.Controls;
+using Utils.Preference;
 using WPFGrep.Utilities;
 using WPFGrep.VOs;
 
@@ -17,6 +18,11 @@ namespace WPFGrep.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
+        private const string PrefStartDirectory = "StartDirectory";
+        private const string PrefFileTypes = "FileTypes";
+        private const string PrefSearchFor = "SearchFor";
+        private const string PrefSearchSubDirectories = "SearchSubDirectories";
+
         private readonly Dictionary<FileInfo, List<GrepResult>> _results = new Dictionary<FileInfo, List<GrepResult>>();
         private readonly ThreadSafeList<GrepSearchWorker> _searchWorkers = new ThreadSafeList<GrepSearchWorker>();
         private bool _dirty;
@@ -29,9 +35,9 @@ namespace WPFGrep.ViewModel
         public MainViewModel()
         {
             if (IsInDesignMode)
-            {
                 StartDirectory = "c:\\temp";
-            }
+            else
+                LoadState();
         }
 
         public string FileTypes
@@ -79,10 +85,18 @@ namespace WPFGrep.ViewModel
 
         public RelayCommand StopCommand => new RelayCommand(StopCommandExecute, StopCommandCanExecute);
 
+        private void LoadState()
+        {
+            StartDirectory = PreferenceManager.GetPreference(PrefStartDirectory, "");
+            FileTypes = PreferenceManager.GetPreference(PrefFileTypes, "");
+            SearchFor = PreferenceManager.GetPreference(PrefSearchFor, "");
+            SearchSubDirectories = PreferenceManager.GetPreference(PrefSearchSubDirectories, false);
+        }
+
         private void GetStartDirectory()
         {
             var openDialog = new OpenDialogView();
-            var vm = (OpenDialogViewModel)openDialog.DataContext;
+            var vm = (OpenDialogViewModel) openDialog.DataContext;
 
             //            // Adding file filter
             //            vm.AddFileFilterExtension(".txt");
@@ -149,7 +163,7 @@ namespace WPFGrep.ViewModel
                     break;
 
                 case GrepSearchEvent.Finished:
-                    _searchWorkers.Remove((GrepSearchWorker)sender);
+                    _searchWorkers.Remove((GrepSearchWorker) sender);
                     if (_searchWorkers.Count == 0) Searching = false;
                     break;
 
@@ -186,9 +200,15 @@ namespace WPFGrep.ViewModel
         private void StopCommandExecute()
         {
             foreach (var search in _searchWorkers)
-            {
                 search.Stop();
-            }
+        }
+
+        public void SaveState()
+        {
+            PreferenceManager.SetPreference(PrefStartDirectory, StartDirectory);
+            PreferenceManager.SetPreference(PrefFileTypes, FileTypes);
+            PreferenceManager.SetPreference(PrefSearchFor, SearchFor);
+            PreferenceManager.SetPreference(PrefSearchSubDirectories, SearchSubDirectories);
         }
     }
 }

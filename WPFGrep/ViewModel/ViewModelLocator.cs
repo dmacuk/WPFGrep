@@ -9,9 +9,9 @@
   DataContext="{Binding Source={StaticResource Locator}, Path=ViewModelName}"
 */
 
+using System.Diagnostics.CodeAnalysis;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
-using System.Diagnostics.CodeAnalysis;
 
 namespace WPFGrep.ViewModel
 {
@@ -35,8 +35,8 @@ namespace WPFGrep.ViewModel
         ///     Gets the Main property.
         /// </summary>
         [SuppressMessage("Microsoft.Performance",
-            "CA1822:MarkMembersAsStatic",
-            Justification = "This non-static member is needed for data binding purposes.")]
+             "CA1822:MarkMembersAsStatic",
+             Justification = "This non-static member is needed for data binding purposes.")]
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
 
         /// <summary>
