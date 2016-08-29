@@ -25,7 +25,6 @@ namespace WPFGrep.ViewModel
 
         private readonly Dictionary<FileInfo, List<GrepResult>> _results = new Dictionary<FileInfo, List<GrepResult>>();
         private readonly ThreadSafeList<GrepSearchWorker> _searchWorkers = new ThreadSafeList<GrepSearchWorker>();
-        private bool _dirty;
 
         private string _fileTypes;
         private string _searchFor;
@@ -43,10 +42,7 @@ namespace WPFGrep.ViewModel
         public string FileTypes
         {
             get { return _fileTypes; }
-            set
-            {
-                if (Set(() => FileTypes, ref _fileTypes, value)) _dirty = true;
-            }
+            set { Set(() => FileTypes, ref _fileTypes, value); }
         }
 
         public RelayCommand GetStartDirectoryCommand => new RelayCommand(GetStartDirectory);
@@ -56,11 +52,7 @@ namespace WPFGrep.ViewModel
         public string SearchFor
         {
             get { return _searchFor; }
-            set
-            {
-                if (Set(() => SearchFor, ref _searchFor, value))
-                    _dirty = true;
-            }
+            set { Set(() => SearchFor, ref _searchFor, value); }
         }
 
         public bool Searching { get; set; }
@@ -68,19 +60,13 @@ namespace WPFGrep.ViewModel
         public bool SearchSubDirectories
         {
             get { return _searchSubDirectories; }
-            set
-            {
-                if (Set(() => SearchSubDirectories, ref _searchSubDirectories, value)) _dirty = true;
-            }
+            set { Set(() => SearchSubDirectories, ref _searchSubDirectories, value); }
         }
 
         public string StartDirectory
         {
             get { return _startDirectory; }
-            set
-            {
-                if (Set(() => StartDirectory, ref _startDirectory, value)) _dirty = true;
-            }
+            set { Set(() => StartDirectory, ref _startDirectory, value); }
         }
 
         public RelayCommand StopCommand => new RelayCommand(StopCommandExecute, StopCommandCanExecute);
