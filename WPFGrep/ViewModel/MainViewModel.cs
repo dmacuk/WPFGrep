@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
-using Gat.Controls;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Utils.Preference;
 using WPFGrep.Utilities;
 using WPFGrep.VOs;
@@ -95,58 +95,14 @@ namespace WPFGrep.ViewModel
 
         private void GetStartDirectory()
         {
-            var openDialog = new OpenDialogView();
-            var vm = (OpenDialogViewModel) openDialog.DataContext;
-
-            //            // Adding file filter
-            //            vm.AddFileFilterExtension(".txt");
-            //
-            //            // Show dialog and take result into account
-            //            bool? result = vm.Show();
-            //            if (result == true)
-            //            {
-            //                // Get selected file path
-            //                StartDirectory = vm.SelectedFilePath;
-            //            }
-            //            else
-            //            {
-            //                StartDirectory = string.Empty;
-            //            }
-
-            // Setting date format by using predefined date format
-            //            vm.DateFormat = OpenDialogViewModelBase.ISO8601_DateFormat;
-
-            // Setting folder dialog
-            vm.IsDirectoryChooser = true;
-            vm.SelectedFilePath = StartDirectory;
-
-            // Show dialog and take result into account
-            var result = vm.Show();
-            if (result == true) StartDirectory = vm.SelectedFilePath;
-
-            //            // Setting save dialog
-            //            vm.IsDirectoryChooser = false;
-            //            vm.IsSaveDialog = true;
-            //            vm.Show();
-            //
-            //            // Customize UI texts
-            //            vm.CancelText = "Abort";
-            //            vm.Caption = "Caption";
-            //            vm.DateFormat = "yy_MM_dd HH:mm:ss";
-            //            vm.DateText = "DateTime";
-            //            vm.FileFilterText = "File extension";
-            //            vm.FileNameText = "File path";
-            //            vm.NameText = "File";
-            //            vm.SaveText = "Store";
-            //            vm.SizeText = "Length";
-            //            vm.TypeText = "File Type";
-            //
-            //            // Setting window properties
-            ////            vm.Owner = MainWindow;
-            ////            vm.StartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
-            //
-            //            // Show
-            //            vm.Show();
+            var dialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                InitialDirectory = StartDirectory
+            };
+            var result = dialog.ShowDialog();
+            if (result == CommonFileDialogResult.Ok)
+                StartDirectory = dialog.FileName;
         }
 
         private void MatchFound(object sender, MatchFoundEventArgs e)
