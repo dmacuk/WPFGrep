@@ -18,7 +18,7 @@ namespace WPFGrep
         public MainWindow()
         {
             InitializeComponent();
-            _model = (MainViewModel) DataContext;
+            _model = (MainViewModel)DataContext;
             Closing += (s, e) => ViewModelLocator.Cleanup();
         }
 
@@ -27,11 +27,10 @@ namespace WPFGrep
             this.LoadSettings();
         }
 
-
         protected override void OnDeactivated(EventArgs e)
         {
             this.SaveSettings();
-            ((MainViewModel) DataContext).SaveState();
+            ((MainViewModel)DataContext).SaveState();
         }
     }
 }

@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+
 namespace WPFGrep.VOs
 {
     internal class GrepResult
     {
-        public string Line { get; set; }
-        public int LineNumner { get; set; }
+        public int LineNumber { get; set; }
+        public IEnumerable<string> Lines { get; set; }
     }
 }

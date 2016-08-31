@@ -1,11 +1,11 @@
-﻿using System.Windows;
-using GalaSoft.MvvmLight.Threading;
+﻿using GalaSoft.MvvmLight.Threading;
+using System.Windows;
 using Utils.Preference;
 
 namespace WPFGrep
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    ///     Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
@@ -16,6 +16,7 @@ namespace WPFGrep
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            DispatcherHelper.Initialize();
             PreferenceManager.GetInstance("WPFGrep.prefs");
         }
 

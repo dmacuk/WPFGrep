@@ -9,9 +9,9 @@
   DataContext="{Binding Source={StaticResource Locator}, Path=ViewModelName}"
 */
 
-using System.Diagnostics.CodeAnalysis;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WPFGrep.ViewModel
 {

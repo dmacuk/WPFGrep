@@ -7,19 +7,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:userControls="clr-namespace:WPFGrep.UserControls"
     Title="WindowsGrep"
-    Width="300"
+    Width="356.28"
     Height="300"
     DataContext="{Binding Main, Source={StaticResource Locator}}"
     x:Name="SearchDetails"
     mc:Ignorable="d ignore">
-
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Skins/MainSkin.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -27,6 +19,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -75,9 +68,14 @@
         <CheckBox
             Grid.Row="3"
             Grid.Column="1"
+            Content="Ignore Case" Style="{DynamicResource CheckboxStyle}"
+            IsChecked="{Binding IgnoreCase}" />
+        <CheckBox
+            Grid.Row="4"
+            Grid.Column="1"
             Content="Search Sub-directories" Style="{DynamicResource CheckboxStyle}"
             IsChecked="{Binding SearchSubDirectories}" />
-        <StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Right">
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="5" HorizontalAlignment="Right">
             <Button
                 x:Name="StartButton"
                 Style="{DynamicResource ControlStyle}"
@@ -89,5 +87,6 @@
                 Content="Stop"
                 Width="{Binding ElementName=StartButton, Path=ActualWidth}" />
         </StackPanel>
+        <ListBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Style="{DynamicResource ControlStyle}" ItemsSource="{Binding Entries}" />
     </Grid>
 </Window>

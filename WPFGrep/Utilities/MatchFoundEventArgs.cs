@@ -3,7 +3,7 @@ using System.IO;
 
 namespace WPFGrep.Utilities
 {
-    internal class MatchFoundEventArgs:EventArgs
+    internal class MatchFoundEventArgs : EventArgs
     {
         public FileInfo File { get; set; }
         public int LineNumber { get; set; }
