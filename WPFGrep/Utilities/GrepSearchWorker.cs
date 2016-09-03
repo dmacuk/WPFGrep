@@ -72,7 +72,6 @@ namespace WPFGrep.Utilities
                 var lineCount = 0;
                 while (_continue && ((line = reader.ReadLine()) != null))
                 {
-                    lineCount++;
                     if (Regex.IsMatch(line, _searchFor, _regexOptions))
                         OnChanged(new MatchFoundEventArgs
                         {
@@ -81,6 +80,7 @@ namespace WPFGrep.Utilities
                             LineNumber = lineCount,
                             Line = line
                         });
+                    lineCount++;
                 }
             }
         }

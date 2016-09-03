@@ -4,22 +4,15 @@ using GalaSoft.MvvmLight.Threading;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using Utils.ObservableDictionary;
 using Utils.Preference;
 using WPFGrep.Utilities;
 using WPFGrep.VOs;
 
 namespace WPFGrep.ViewModel
 {
-    /// <summary>
-    ///     This class contains properties that the main View can data bind to.
-    ///     <para>
-    ///         See http://www.mvvmlight.net
-    ///     </para>
-    /// </summary>
-    // ReSharper disable once ClassNeverInstantiated.Global
     public class MainViewModel : ViewModelBase
     {
         private const string PrefStartDirectory = "StartDirectory";
@@ -27,13 +20,16 @@ namespace WPFGrep.ViewModel
         private const string PrefSearchFor = "SearchFor";
         private const string PrefSearchSubDirectories = "SearchSubDirectories";
         private const string PrefIgnoreCase = "SearchSubDirectories";
-        private readonly int _numberOfLines = 0;
+        private const string PrefNumberOfLines = "NumberOfLines";
 
-        private readonly Dictionary<string, List<GrepResult>> _results = new Dictionary<string, List<GrepResult>>();
         private readonly ThreadSafeList<GrepSearchWorker> _searchWorkers = new ThreadSafeList<GrepSearchWorker>();
-
         private string _fileTypes;
         private bool _ignoreCase;
+        private int _numberOfLines;
+
+        private ObservableDictionary<string, List<GrepResult>> _results =
+            new ObservableDictionary<string, List<GrepResult>>();
+
         private string _searchFor;
         private bool _searching;
         private bool _searchSubDirectories;
@@ -43,16 +39,37 @@ namespace WPFGrep.ViewModel
         public MainViewModel()
         {
             if (IsInDesignMode)
+            {
                 StartDirectory = "c:\\temp";
+                var grepResult1 = new GrepResult
+                {
+                    Lines = new List<string>
+                    {
+                        "Line 1",
+                        "Line 3",
+                        "Line 3",
+                        "Line 4"
+                    }
+                };
+                var grepResult2 = new GrepResult
+                {
+                    Lines = new List<string>
+                    {
+                        "Line 5",
+                        "Line 6",
+                        "Line 7",
+                        "Line 8"
+                    }
+                };
+                _results.Add("Filename Here", new List<GrepResult> { grepResult1, grepResult2 });
+                _results.Add("Filename 2 Here", new List<GrepResult> { grepResult1, grepResult2 });
+            }
             else
             {
                 LoadState();
                 StartDirectory = "D:\\Documents\\Visual Studio 2015\\Projects";
-                Entries = new ObservableCollection<string>();
             }
         }
-
-        public ObservableCollection<string> Entries { get; set; }
 
         public string FileTypes
         {
@@ -82,6 +99,12 @@ namespace WPFGrep.ViewModel
             set { Set(() => SearchSubDirectories, ref _searchSubDirectories, value); }
         }
 
+        public ObservableDictionary<string, List<GrepResult>> Results
+        {
+            get { return _results; }
+            set { Set(() => Results, ref _results, value); }
+        }
+
         public string StartDirectory
         {
             get { return _startDirectory; }
@@ -96,6 +119,12 @@ namespace WPFGrep.ViewModel
             set { Set(() => IgnoreCase, ref _ignoreCase, value); }
         }
 
+        public int NumberOfLines
+        {
+            get { return _numberOfLines; }
+            set { Set(() => NumberOfLines, ref _numberOfLines, value); }
+        }
+
         private void LoadState()
         {
             StartDirectory = PreferenceManager.GetPreference(PrefStartDirectory, "");
@@ -103,6 +132,7 @@ namespace WPFGrep.ViewModel
             SearchFor = PreferenceManager.GetPreference(PrefSearchFor, "");
             SearchSubDirectories = PreferenceManager.GetPreference(PrefSearchSubDirectories, false);
             IgnoreCase = PreferenceManager.GetPreference(PrefIgnoreCase, false);
+            NumberOfLines = PreferenceManager.GetPreference(PrefNumberOfLines, 1);
         }
 
         private void GetStartDirectory()
@@ -125,22 +155,26 @@ namespace WPFGrep.ViewModel
                     var fileName = e.File.FullName;
                     var grepResult = new GrepResult
                     {
+                        FileName = fileName,
                         LineNumber = e.LineNumber,
-                        Lines = File.ReadLines(fileName).Skip(e.LineNumber - _numberOfLines).Take(_numberOfLines + 1)
+                        Lines =
+                            File.ReadLines(fileName)
+                                .Skip(e.LineNumber - _numberOfLines)
+                                .Take(_numberOfLines + 1)
+                                .ToList()
                     };
-                    if (!_results.ContainsKey(fileName)) _results.Add(fileName, new List<GrepResult>());
-                    _results[fileName].Add(grepResult);
                     DispatcherHelper.CheckBeginInvokeOnUI(
-                        () => { Entries.Add(fileName); }
-                    );
+                        () =>
+                        {
+                            if (!_results.ContainsKey(fileName)) _results.Add(fileName, new List<GrepResult>());
+                            _results[fileName].Add(grepResult);
+                            //                                                Set(() => Results, ref _results, new Dictionary<string, List<GrepResult>>(_results));
+                        });
                     break;
 
                 case GrepSearchEvent.Finished:
                     _searchWorkers.Remove((GrepSearchWorker)sender);
                     if (_searchWorkers.Count == 0) Searching = false;
-                    DispatcherHelper.CheckBeginInvokeOnUI(
-                        () => { Entries.Add($"Finshed {_searchWorkers.Count} left"); }
-                    );
                     break;
 
                 default:
@@ -156,7 +190,7 @@ namespace WPFGrep.ViewModel
 
         private void SearchCommandExecute()
         {
-            Entries.Clear();
+            Results.Clear();
             Searching = true;
             _searchWorkers.Clear();
             var filetypes = _fileTypes.Split(';');
@@ -188,6 +222,7 @@ namespace WPFGrep.ViewModel
             PreferenceManager.SetPreference(PrefSearchFor, SearchFor);
             PreferenceManager.SetPreference(PrefSearchSubDirectories, SearchSubDirectories);
             PreferenceManager.SetPreference(PrefIgnoreCase, IgnoreCase);
+            PreferenceManager.SetPreference(PrefNumberOfLines, NumberOfLines);
         }
     }
 }

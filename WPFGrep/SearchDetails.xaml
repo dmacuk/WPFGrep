@@ -5,12 +5,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ignore="http://www.galasoft.ch/ignore"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
     xmlns:userControls="clr-namespace:WPFGrep.UserControls"
-    Title="WindowsGrep"
-    Width="356.28"
-    Height="300"
-    DataContext="{Binding Main, Source={StaticResource Locator}}"
     x:Name="SearchDetails"
+    Title="WindowsGrep"
+    Width="656.28"
+    Height="579"
+    DataContext="{Binding Main, Source={StaticResource Locator}}"
     mc:Ignorable="d ignore">
 
     <Grid>
@@ -19,6 +20,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -65,28 +67,73 @@
             Grid.Column="1"
             Style="{DynamicResource ControlStyle}"
             Text="{Binding SearchFor}" />
-        <CheckBox
+        <Label
+            Grid.Row="3"
+            Grid.Column="0"
+            Style="{DynamicResource CaptionStyle}"
+            Content="# Lines" />
+        <TextBox
             Grid.Row="3"
             Grid.Column="1"
-            Content="Ignore Case" Style="{DynamicResource CheckboxStyle}"
-            IsChecked="{Binding IgnoreCase}" />
+            Style="{DynamicResource ControlStyle}"
+            BorderThickness="1"
+            Text="{Binding NumberOfLines}" />
         <CheckBox
             Grid.Row="4"
             Grid.Column="1"
-            Content="Search Sub-directories" Style="{DynamicResource CheckboxStyle}"
+            Style="{DynamicResource CheckboxStyle}"
+            Content="Ignore Case"
+            IsChecked="{Binding IgnoreCase}" />
+        <CheckBox
+            Grid.Row="5"
+            Grid.Column="1"
+            Style="{DynamicResource CheckboxStyle}"
+            Content="Search Sub-directories"
             IsChecked="{Binding SearchSubDirectories}" />
-        <StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="5" HorizontalAlignment="Right">
+        <StackPanel
+            Grid.Row="6"
+            Grid.Column="1"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
             <Button
                 x:Name="StartButton"
                 Style="{DynamicResource ControlStyle}"
                 Command="{Binding SearchCommand}"
                 Content="Search" />
             <Button
+                Width="{Binding ElementName=StartButton, Path=ActualWidth}"
                 Style="{DynamicResource ControlStyle}"
                 Command="{Binding StopCommand}"
-                Content="Stop"
-                Width="{Binding ElementName=StartButton, Path=ActualWidth}" />
+                Content="Stop" />
         </StackPanel>
-        <ListBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Style="{DynamicResource ControlStyle}" ItemsSource="{Binding Entries}" />
+        <ListBox
+            Grid.Row="7"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Style="{DynamicResource ControlStyle}"
+            BorderThickness="0"
+            ItemsSource="{Binding Results}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <Label
+                            Margin="5,5,5,0"
+                            Style="{DynamicResource CaptionStyle}"
+                            Content="{Binding Path=Key}" />
+                        <ListBox
+                            Margin="5,0,5,5"
+                            Style="{DynamicResource ControlStyle}"
+                            BorderThickness="0"
+                            ItemsSource="{Binding Path=Value}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Label Content="{Binding FormattedLines}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>
