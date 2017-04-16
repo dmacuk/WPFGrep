@@ -73,7 +73,7 @@ namespace WPFGrep.ViewModel
 
         public string FileTypes
         {
-            get { return _fileTypes; }
+            get => _fileTypes;
             set { Set(() => FileTypes, ref _fileTypes, value); }
         }
 
@@ -83,31 +83,31 @@ namespace WPFGrep.ViewModel
 
         public string SearchFor
         {
-            get { return _searchFor; }
+            get => _searchFor;
             set { Set(() => SearchFor, ref _searchFor, value); }
         }
 
         private bool Searching
         {
-            get { return _searching; }
+            get => _searching;
             set { Set(() => Searching, ref _searching, value); }
         }
 
         public bool SearchSubDirectories
         {
-            get { return _searchSubDirectories; }
+            get => _searchSubDirectories;
             set { Set(() => SearchSubDirectories, ref _searchSubDirectories, value); }
         }
 
         public ObservableDictionary<string, List<GrepResult>> Results
         {
-            get { return _results; }
+            get => _results;
             set { Set(() => Results, ref _results, value); }
         }
 
         public string StartDirectory
         {
-            get { return _startDirectory; }
+            get => _startDirectory;
             set { Set(() => StartDirectory, ref _startDirectory, value); }
         }
 
@@ -115,13 +115,13 @@ namespace WPFGrep.ViewModel
 
         public bool IgnoreCase
         {
-            get { return _ignoreCase; }
+            get => _ignoreCase;
             set { Set(() => IgnoreCase, ref _ignoreCase, value); }
         }
 
         public int NumberOfLines
         {
-            get { return _numberOfLines; }
+            get => _numberOfLines;
             set { Set(() => NumberOfLines, ref _numberOfLines, value); }
         }
 

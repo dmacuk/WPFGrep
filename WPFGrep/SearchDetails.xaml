@@ -53,7 +53,6 @@
                     Content="e.g. *.csv;*.TXT;*.cs"
                     IsOpen="True"
                     Placement="Mouse"
-                    StaysOpen="True"
                     Visibility="Visible" />
             </TextBox.ToolTip>
         </TextBox>

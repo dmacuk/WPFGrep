@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -9,7 +8,7 @@ namespace WPFGrep.Utilities
     {
         public delegate void MatchFoundEventHandler(object sender, MatchFoundEventArgs e);
 
-        private readonly bool _continue = true;
+        private bool _continue = true;
 
         private readonly RegexOptions _regexOptions;
 
@@ -20,8 +19,6 @@ namespace WPFGrep.Utilities
         private readonly bool _searchSubDirectories;
 
         private readonly DirectoryInfo _startDirectory;
-
-        private Task _worker;
 
         public GrepSearchWorker(string startDirectory, string searchPattern, string searchFor, bool searchSubDirectories,
             bool ignoreCase)
@@ -38,7 +35,7 @@ namespace WPFGrep.Utilities
 
         public void Search()
         {
-            _worker = Task.Factory.StartNew(() =>
+            Task.Factory.StartNew(() =>
             {
                 Search(_startDirectory);
                 OnChanged(new MatchFoundEventArgs
@@ -50,7 +47,7 @@ namespace WPFGrep.Utilities
 
         public void Stop()
         {
-            throw new NotImplementedException();
+            _continue = false;
         }
 
         private void OnChanged(MatchFoundEventArgs e)
