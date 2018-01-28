@@ -32,8 +32,8 @@
         <Label
             Grid.Row="0"
             Grid.Column="0"
-            Style="{DynamicResource CaptionStyle}"
-            Content="Start Directory" />
+            Content="Start Directory"
+            Style="{DynamicResource CaptionStyle}" />
         <userControls:DirectoryPicker
             Grid.Row="0"
             Grid.Column="1"
@@ -41,8 +41,8 @@
         <Label
             Grid.Row="1"
             Grid.Column="0"
-            Style="{DynamicResource CaptionStyle}"
-            Content="File Types" />
+            Content="File Types"
+            Style="{DynamicResource CaptionStyle}" />
         <TextBox
             Grid.Row="1"
             Grid.Column="1"
@@ -59,8 +59,8 @@
         <Label
             Grid.Row="2"
             Grid.Column="0"
-            Style="{DynamicResource CaptionStyle}"
-            Content="Search For" />
+            Content="Search For"
+            Style="{DynamicResource CaptionStyle}" />
         <TextBox
             Grid.Row="2"
             Grid.Column="1"
@@ -69,26 +69,26 @@
         <Label
             Grid.Row="3"
             Grid.Column="0"
-            Style="{DynamicResource CaptionStyle}"
-            Content="# Lines" />
+            Content="# Lines"
+            Style="{DynamicResource CaptionStyle}" />
         <TextBox
             Grid.Row="3"
             Grid.Column="1"
-            Style="{DynamicResource ControlStyle}"
             BorderThickness="1"
+            Style="{DynamicResource ControlStyle}"
             Text="{Binding NumberOfLines}" />
         <CheckBox
             Grid.Row="4"
             Grid.Column="1"
-            Style="{DynamicResource CheckboxStyle}"
             Content="Ignore Case"
-            IsChecked="{Binding IgnoreCase}" />
+            IsChecked="{Binding IgnoreCase}"
+            Style="{DynamicResource CheckboxStyle}" />
         <CheckBox
             Grid.Row="5"
             Grid.Column="1"
-            Style="{DynamicResource CheckboxStyle}"
             Content="Search Sub-directories"
-            IsChecked="{Binding SearchSubDirectories}" />
+            IsChecked="{Binding SearchSubDirectories}"
+            Style="{DynamicResource CheckboxStyle}" />
         <StackPanel
             Grid.Row="6"
             Grid.Column="1"
@@ -96,37 +96,37 @@
             Orientation="Horizontal">
             <Button
                 x:Name="StartButton"
-                Style="{DynamicResource ControlStyle}"
                 Command="{Binding SearchCommand}"
-                Content="Search" />
+                Content="Search"
+                Style="{DynamicResource ControlStyle}" />
             <Button
                 Width="{Binding ElementName=StartButton, Path=ActualWidth}"
-                Style="{DynamicResource ControlStyle}"
                 Command="{Binding StopCommand}"
-                Content="Stop" />
+                Content="Stop"
+                Style="{DynamicResource ControlStyle}" />
         </StackPanel>
         <ListBox
             Grid.Row="7"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Style="{DynamicResource ControlStyle}"
             BorderThickness="0"
-            ItemsSource="{Binding Results}">
+            ItemsSource="{Binding Results}"
+            Style="{DynamicResource ControlStyle}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
                         <Label
                             Margin="5,5,5,0"
-                            Style="{DynamicResource CaptionStyle}"
-                            Content="{Binding Path=Key}" />
+                            Content="{Binding Path=Key}"
+                            Style="{DynamicResource CaptionStyle}" />
                         <ListBox
                             Margin="5,0,5,5"
-                            Style="{DynamicResource ControlStyle}"
                             BorderThickness="0"
-                            ItemsSource="{Binding Path=Value}">
+                            ItemsSource="{Binding Path=Value}"
+                            Style="{DynamicResource ControlStyle}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Label Content="{Binding FormattedLines}" />
+                                    <TextBlock Text="{Binding FormattedLines}" />
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>

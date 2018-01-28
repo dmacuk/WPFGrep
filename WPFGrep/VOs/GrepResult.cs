@@ -21,5 +21,35 @@ namespace WPFGrep.VOs
                 return sb.ToString();
             }
         }
+
+        public string BeforeLines
+        {
+            get
+            {
+                var sb = new StringBuilder();
+                var line = Lines.Count / 2;
+                for (var i = 0; i < line; i++)
+                {
+                    sb.Append(Lines[i]).Append(Environment.NewLine);
+                }
+
+                return sb.ToString();
+            }
+        }
+
+        public string AfterLines
+        {
+            get
+            {
+                var sb = new StringBuilder();
+                var line = Lines.Count / 2 + 1;
+                for (var i = line; i < Lines.Count; i++)
+                {
+                    sb.Append(Lines[i]).Append(Environment.NewLine);
+                }
+
+                return sb.ToString();
+            }
+        }
     }
 }

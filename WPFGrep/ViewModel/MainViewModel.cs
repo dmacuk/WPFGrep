@@ -160,7 +160,7 @@ namespace WPFGrep.ViewModel
                         Lines =
                             File.ReadLines(fileName)
                                 .Skip(e.LineNumber - _numberOfLines)
-                                .Take(_numberOfLines + 1)
+                                .Take(_numberOfLines * 2 + 1)
                                 .ToList()
                     };
                     DispatcherHelper.CheckBeginInvokeOnUI(
